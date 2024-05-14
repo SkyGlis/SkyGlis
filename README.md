@@ -1,4 +1,4 @@
-# :sparkles: Boas! :vulcan_salute:
+# :wave: Boas! :wave:
 
 ![](https://komarev.com/ghpvc/?username=skyglis&color=000000)
 ![](https://estruyf-github.azurewebsites.net/api/VisitorHit?user=skyglis&countColorcountColor&countColor=%232979ff) ![GitHub followers](https://img.shields.io/github/followers/skyglis?label=Follow&style=social)
