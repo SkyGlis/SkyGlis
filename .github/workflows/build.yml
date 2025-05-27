@@ -36,4 +36,4 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git push
         env:
-          GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
