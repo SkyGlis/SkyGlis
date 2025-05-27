@@ -37,4 +37,4 @@ jobs:
           git config --global user.email "github-actions-bot@skyglis.github.io"
           git config --global user.name "SkyGlis/GitHub-Actions-Bot"
           git commit -m "Updated README" -a || echo "No changes to commit"
-          git push
+          git push https://${{ secrets.ACCESS_TOKEN }}@github.com/SkyGlis/SkyGlis.git
