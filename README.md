@@ -4,4 +4,3 @@
     <img alt="Andrew Grant's GitHub Profile README" src="https://raw.githubusercontent.com/SkyGlis/SkyGlis/main/light_mode.svg">
   </picture>
 </a>
-a
