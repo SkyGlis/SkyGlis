@@ -14,6 +14,8 @@ import hashlib
 HEADERS = {'authorization': 'token '+ os.environ['ACCESS_TOKEN']}
 USER_NAME = os.environ['USER_NAME']
 QUERY_COUNT = {'user_getter': 0, 'follower_getter': 0, 'graph_repos_stars': 0, 'recursive_loc': 0, 'graph_commits': 0, 'loc_query': 0}
+DOT_PATTERN_SPACE_ONLY = ' '
+DOT_PATTERN_DOT_SPACE = '. '
 DOT_PADDING_SPACE_ONLY = 1
 DOT_PADDING_DOT_SPACE = 2
 AUTO_JUSTIFY_MIN_LENGTHS = {
@@ -353,7 +355,7 @@ def auto_justify_format(root, element_id, new_text):
     current_value = get_element_text(root, element_id)
     current_dots = get_element_text(root, f"{element_id}_dots")
     current_length = len(current_value) + dot_padding_len(current_dots)
-    target_length = max(AUTO_JUSTIFY_MIN_LENGTHS.get(element_id, 0), current_length)
+    target_length = max(AUTO_JUSTIFY_MIN_LENGTHS.get(element_id, 0), current_length, len(str(new_text)))
     justify_format(root, element_id, new_text, target_length)
 
 
@@ -374,9 +376,9 @@ def dot_padding_len(dot_text):
     """
     if not dot_text:
         return 0
-    if dot_text == ' ':
+    if dot_text == DOT_PATTERN_SPACE_ONLY:
         return DOT_PADDING_SPACE_ONLY
-    if dot_text == '. ':
+    if dot_text == DOT_PATTERN_DOT_SPACE:
         return DOT_PADDING_DOT_SPACE
     return dot_text.count('.')
 
