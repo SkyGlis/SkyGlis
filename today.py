@@ -14,6 +14,18 @@ import hashlib
 HEADERS = {'authorization': 'token '+ os.environ['ACCESS_TOKEN']}
 USER_NAME = os.environ['USER_NAME']
 QUERY_COUNT = {'user_getter': 0, 'follower_getter': 0, 'graph_repos_stars': 0, 'recursive_loc': 0, 'graph_commits': 0, 'loc_query': 0}
+DOT_PATTERN_SPACE_ONLY = ' '
+DOT_PATTERN_DOT_SPACE = '. '
+DOT_PADDING_SPACE_ONLY = 1
+DOT_PADDING_DOT_SPACE = 2
+AUTO_JUSTIFY_MIN_LENGTHS = {
+    'commit_data': 22,
+    'star_data': 14,
+    'repo_data': 6,
+    'follower_data': 10,
+    'loc_data': 9,
+    'loc_del': 7
+}
 
 
 def daily_readme(birthday):
@@ -323,16 +335,52 @@ def svg_overwrite(filename, age_data, commit_data, star_data, repo_data, contrib
     """
     tree = etree.parse(filename)
     root = tree.getroot()
-    justify_format(root, 'age_data', age_data)
-    justify_format(root, 'commit_data', commit_data, 22)
-    justify_format(root, 'star_data', star_data, 14)
-    justify_format(root, 'repo_data', repo_data, 6)
+    auto_justify_format(root, 'age_data', age_data)
+    auto_justify_format(root, 'commit_data', commit_data)
+    auto_justify_format(root, 'star_data', star_data)
+    auto_justify_format(root, 'repo_data', repo_data)
     justify_format(root, 'contrib_data', contrib_data)
-    justify_format(root, 'follower_data', follower_data, 10)
-    justify_format(root, 'loc_data', loc_data[2], 9)
-    justify_format(root, 'loc_add', loc_data[0])
-    justify_format(root, 'loc_del', loc_data[1], 7)
+    auto_justify_format(root, 'follower_data', follower_data)
+    auto_justify_format(root, 'loc_data', loc_data[2])
+    auto_justify_format(root, 'loc_add', loc_data[0])
+    auto_justify_format(root, 'loc_del', loc_data[1])
     tree.write(filename, encoding='utf-8', xml_declaration=True)
+
+
+def auto_justify_format(root, element_id, new_text):
+    """
+    Automatically updates text and dots using the current SVG + a stable minimum width.
+    root: etree.Element (SVG root)
+    """
+    current_value = get_element_text(root, element_id)
+    current_dots = get_element_text(root, f"{element_id}_dots")
+    current_length = len(current_value) + dot_padding_len(current_dots)
+    target_length = max(AUTO_JUSTIFY_MIN_LENGTHS.get(element_id, 0), current_length, len(str(new_text)))
+    justify_format(root, element_id, new_text, target_length)
+
+
+def get_element_text(root, element_id):
+    """
+    Returns SVG element text by id, or an empty string if missing.
+    """
+    element = root.find(f".//*[@id='{element_id}']")
+    if element is None or element.text is None:
+        return ''
+    return str(element.text)
+
+
+def dot_padding_len(dot_text):
+    """
+    Converts dot spacing text into justify padding length.
+    Examples: '' -> 0, ' ' -> 1, '. ' -> 2, ' ..... ' -> 5 (counting only '.')
+    """
+    if not dot_text:
+        return 0
+    if dot_text == DOT_PATTERN_SPACE_ONLY:
+        return DOT_PADDING_SPACE_ONLY
+    if dot_text == DOT_PATTERN_DOT_SPACE:
+        return DOT_PADDING_DOT_SPACE
+    return dot_text.count('.')
 
 
 def justify_format(root, element_id, new_text, length=0):
