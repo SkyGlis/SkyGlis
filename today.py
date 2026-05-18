@@ -14,6 +14,14 @@ import hashlib
 HEADERS = {'authorization': 'token '+ os.environ['ACCESS_TOKEN']}
 USER_NAME = os.environ['USER_NAME']
 QUERY_COUNT = {'user_getter': 0, 'follower_getter': 0, 'graph_repos_stars': 0, 'recursive_loc': 0, 'graph_commits': 0, 'loc_query': 0}
+AUTO_JUSTIFY_MIN_LENGTHS = {
+    'commit_data': 22,
+    'star_data': 14,
+    'repo_data': 6,
+    'follower_data': 10,
+    'loc_data': 9,
+    'loc_del': 7
+}
 
 
 def daily_readme(birthday):
@@ -337,11 +345,13 @@ def svg_overwrite(filename, age_data, commit_data, star_data, repo_data, contrib
 
 def auto_justify_format(root, element_id, new_text):
     """
-    Automatically updates and formats text and dots based on current SVG content.
+    Automatically updates text and dots using the current SVG + a stable minimum width.
+    root: etree.Element (SVG root)
     """
     current_value = get_element_text(root, element_id)
     current_dots = get_element_text(root, f"{element_id}_dots")
-    target_length = len(current_value) + dot_padding_len(current_dots)
+    current_length = len(current_value) + dot_padding_len(current_dots)
+    target_length = max(AUTO_JUSTIFY_MIN_LENGTHS.get(element_id, 0), current_length)
     justify_format(root, element_id, new_text, target_length)
 
 
@@ -357,7 +367,8 @@ def get_element_text(root, element_id):
 
 def dot_padding_len(dot_text):
     """
-    Converts the dot spacing string into its original justify padding length.
+    Converts dot spacing text into justify padding length.
+    Examples: '' -> 0, ' ' -> 1, '. ' -> 2, ' ..... ' -> 5
     """
     if not dot_text:
         return 0
