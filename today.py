@@ -323,16 +323,49 @@ def svg_overwrite(filename, age_data, commit_data, star_data, repo_data, contrib
     """
     tree = etree.parse(filename)
     root = tree.getroot()
-    justify_format(root, 'age_data', age_data)
-    justify_format(root, 'commit_data', commit_data, 22)
-    justify_format(root, 'star_data', star_data, 14)
-    justify_format(root, 'repo_data', repo_data, 6)
+    auto_justify_format(root, 'age_data', age_data)
+    auto_justify_format(root, 'commit_data', commit_data)
+    auto_justify_format(root, 'star_data', star_data)
+    auto_justify_format(root, 'repo_data', repo_data)
     justify_format(root, 'contrib_data', contrib_data)
-    justify_format(root, 'follower_data', follower_data, 10)
-    justify_format(root, 'loc_data', loc_data[2], 9)
-    justify_format(root, 'loc_add', loc_data[0])
-    justify_format(root, 'loc_del', loc_data[1], 7)
+    auto_justify_format(root, 'follower_data', follower_data)
+    auto_justify_format(root, 'loc_data', loc_data[2])
+    auto_justify_format(root, 'loc_add', loc_data[0])
+    auto_justify_format(root, 'loc_del', loc_data[1])
     tree.write(filename, encoding='utf-8', xml_declaration=True)
+
+
+def auto_justify_format(root, element_id, new_text):
+    """
+    Automatically updates and formats text and dots based on current SVG content.
+    """
+    current_value = get_element_text(root, element_id)
+    current_dots = get_element_text(root, f"{element_id}_dots")
+    target_length = len(current_value) + dot_padding_len(current_dots)
+    justify_format(root, element_id, new_text, target_length)
+
+
+def get_element_text(root, element_id):
+    """
+    Returns SVG element text by id, or an empty string if missing.
+    """
+    element = root.find(f".//*[@id='{element_id}']")
+    if element is None or element.text is None:
+        return ''
+    return str(element.text)
+
+
+def dot_padding_len(dot_text):
+    """
+    Converts the dot spacing string into its original justify padding length.
+    """
+    if not dot_text:
+        return 0
+    if dot_text == ' ':
+        return 1
+    if dot_text == '. ':
+        return 2
+    return dot_text.count('.')
 
 
 def justify_format(root, element_id, new_text, length=0):
