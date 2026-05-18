@@ -14,6 +14,8 @@ import hashlib
 HEADERS = {'authorization': 'token '+ os.environ['ACCESS_TOKEN']}
 USER_NAME = os.environ['USER_NAME']
 QUERY_COUNT = {'user_getter': 0, 'follower_getter': 0, 'graph_repos_stars': 0, 'recursive_loc': 0, 'graph_commits': 0, 'loc_query': 0}
+DOT_PADDING_SPACE_ONLY = 1
+DOT_PADDING_DOT_SPACE = 2
 AUTO_JUSTIFY_MIN_LENGTHS = {
     'commit_data': 22,
     'star_data': 14,
@@ -368,14 +370,14 @@ def get_element_text(root, element_id):
 def dot_padding_len(dot_text):
     """
     Converts dot spacing text into justify padding length.
-    Examples: '' -> 0, ' ' -> 1, '. ' -> 2, ' ..... ' -> 5
+    Examples: '' -> 0, ' ' -> 1, '. ' -> 2, ' ..... ' -> 5 (counting only '.')
     """
     if not dot_text:
         return 0
     if dot_text == ' ':
-        return 1
+        return DOT_PADDING_SPACE_ONLY
     if dot_text == '. ':
-        return 2
+        return DOT_PADDING_DOT_SPACE
     return dot_text.count('.')
 
 
