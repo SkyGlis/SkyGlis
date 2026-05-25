@@ -19,12 +19,13 @@ DOT_PATTERN_DOT_SPACE = '. '
 DOT_PADDING_SPACE_ONLY = 1
 DOT_PADDING_DOT_SPACE = 2
 AUTO_JUSTIFY_MIN_LENGTHS = {
-    'age_data': 30,
+    'age_data': 51,
     'commit_data': 22,
     'star_data': 14,
     'repo_data': 6,
     'follower_data': 10,
     'loc_data': 9,
+    'loc_add': 9,
     'loc_del': 7
 }
 
