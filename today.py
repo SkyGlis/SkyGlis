@@ -35,8 +35,8 @@ def daily_readme(birthday):
     Returns the length of time since I was born
     e.g. 'XX years, XX months, XX days'
     """
-    reference_day = datetime.datetime.today() + datetime.timedelta(days=1)
-    diff = relativedelta.relativedelta(reference_day, birthday)
+    next_day = datetime.datetime.today() + datetime.timedelta(days=1)
+    diff = relativedelta.relativedelta(next_day, birthday)
     return '{} {}, {} {}, {} {}{}'.format(
         diff.years, 'year' + format_plural(diff.years), 
         diff.months, 'month' + format_plural(diff.months), 
